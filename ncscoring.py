@@ -15,6 +15,7 @@ class SICsv():
 class Classifier(Enum):
     OK = '0'
     DNS = '1'
+    DNF = '2'
     MP = '3'
 
 def rank(iterable):
@@ -29,7 +30,7 @@ def rank(iterable):
     return ranked_list
 
 def get_points(n):
-    return POINTS[n] if n < len(POINTS) else 1
+    return POINTS[n] if n < len(POINTS) else POINTS[-1]
 
 # default
 POINTS = [25, 20, 15, 12, 10, 8, 7, 6, 5, 4, 3, 2, 1]
