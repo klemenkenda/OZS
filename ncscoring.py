@@ -1,16 +1,12 @@
-# my imports
 import json
 import csv
-from enum import Enum
-from operator import itemgetter
-from collections import defaultdict
 
-class SICsv():
-    CLASSIFIER = 12
-    CLUB = 15
-    NATIONALITY = 16
-    CATEGORY = 18
-    PLACE = 43
+from collections import defaultdict
+from operator import itemgetter
+from pprint import pprint
+from enum import Enum
+
+SICSV = {'CLASSIFIER': 12, 'CLUB': 15, 'NATIONALITY': 16, 'CATEGORY': 18, 'PLACE': 43}
 
 class Classifier(Enum):
     OK = '0'
@@ -32,6 +28,7 @@ def rank(iterable):
 def get_points(n):
     return POINTS[n] if n < len(POINTS) else POINTS[-1]
 
+DEBUG = False
 # default
 POINTS = [25, 20, 15, 12, 10, 8, 7, 6, 5, 4, 3, 2, 1]
 LONG_FILE = "data/long.csv"
@@ -40,30 +37,45 @@ LONG_FILE = "data/long.csv"
 with open("data/config.json", encoding="utf-8") as config_file:
     CONFIG = json.load(config_file)
 
-results = defaultdict(list)
+def read_sicsv(file):
+    results = defaultdict(list)
+    with open(file, encoding="utf-8") as long_file:
+        for row in csv.reader(long_file, delimiter=";"):
+            if row[SICSV['NATIONALITY']] == "SLO" \
+            and row[SICSV['CLASSIFIER']] == Classifier.OK.value \
+            and row[SICSV['CATEGORY']] in CONFIG['long']:
+                key = (row[SICSV['CATEGORY']])
+                value = (int(row[SICSV['PLACE']]), row[SICSV['CLUB']])
+                results[key].append(value)
+    if DEBUG:
+        print("Results with only national clubs")
+        pprint(results)
+    return results
 
-with open(LONG_FILE, encoding="utf-8") as long_file:
-    for row in csv.reader(long_file, delimiter=";"):
-        if row[SICsv.NATIONALITY] == "SLO" \
-           and row[SICsv.CLASSIFIER] == Classifier.OK.value \
-           and row[SICsv.CATEGORY] in CONFIG['long']:
-            key = (row[SICsv.CATEGORY])
-            value = (int(row[SICsv.PLACE]), row[SICsv.CLUB])
-            results[key].append(value)
+def calculate_scores_long(results):
+    club_scores = defaultdict(int)
+    for category, result in results.items():
+        ranking = rank(sorted(result, key=itemgetter(0)))
+        counter = defaultdict(int)
+        club_cat_scores = defaultdict(int)
+        for points, _, club in ranking:
+            counter[club] += 1
+            if counter[club] <= 2:
+                club_cat_scores[club] += points
+                club_scores[club] += points
 
-results = {category: rank(sorted(result, key=itemgetter(0)))
-           for category, result in results.items()}
+        if DEBUG:
+            print(category)
+            pprint(ranking)
+            pprint(club_cat_scores)
+    return club_scores
 
-club_cat_scores = defaultdict(int)
-club_scores = defaultdict(int)
+def score_long(long_file):
+    results = read_sicsv(long_file)
+    return calculate_scores_long(results)
 
-for category, ranking in results.items():
-    # ranking = rank(sorted(result, key=itemgetter(0)))
-    counter = defaultdict(int)
-    for points, _, club in ranking:
-        counter[club] += 1
-        if counter[club] <= 2:
-            key = (category, club)
-            club_cat_scores[key] += points
-            club_scores[club] += points 
-
+if __name__ == "__main__":
+    scores = score_long(LONG_FILE)
+    
+    for club, score in sorted(scores.items(), key=itemgetter(1), reverse=True):
+        print("{0:<20s} {1:>5d}".format(club, score))
