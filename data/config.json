@@ -23,8 +23,8 @@
             "M35", "Ž35"
         ],
         "legs": 2,
-        "exceptions": [
-            { "category": "M21", "legs": 3 }
-        ]
+        "exceptions": {
+            "M21" : 3
+        }
     }    
 }
