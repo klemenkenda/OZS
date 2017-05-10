@@ -15,6 +15,10 @@ RELAY_FILE = "data/relay.csv"
 SICSV = {'CLASSIFIER': 12, 'CLUB': 15, 'NATIONALITY': 16, 'CATEGORY': 18, 'PLACE': 43}
 SICSV_RELAY = {'CLASSIFIER': 6, 'CLUB': 9, 'NATIONALITY': 10, 'CATEGORY': 12, 'PLACE': -2}
 
+# read config
+with open("data/config.json", encoding="utf-8") as config_file:
+    CONFIG = json.load(config_file)
+
 class Classifier(Enum):
     OK = '0'
     DNS = '1'
@@ -34,10 +38,6 @@ def rank(iterable):
 
 def get_points(n):
     return POINTS[n] if n < len(POINTS) else POINTS[-1]
-
-# read config
-with open("data/config.json", encoding="utf-8") as config_file:
-    CONFIG = json.load(config_file)
 
 def read_sicsv(file, categories, sicsv):
     results = defaultdict(list)
