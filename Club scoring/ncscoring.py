@@ -6,7 +6,7 @@ from operator import itemgetter
 from pprint import pprint
 from enum import Enum
 
-DEBUG = False
+DEBUG = True
 
 POINTS = [25, 20, 15, 12, 10, 8, 7, 6, 5, 4, 3, 2, 1]
 LONG_FILE = "data/long.csv"

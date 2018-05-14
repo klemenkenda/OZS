@@ -4,13 +4,13 @@ Sistem za točkovanje OZS.
 ## Točkovanje klubov DP dolge proge/štafete
 
 ### Sistemske zahteve
-Za zagon skripte potrebujete Python (3.x). Skripto običajno zaženete kot """python ime_skripte.py""".
+Za zagon skripte potrebujete Python (3.x). Skripto običajno zaženete kot ```python ime_skripte.py```.
 
 ### Priprava vhodnih podatkov
-Vhodne podatke v @SICSV in @SICSV-RELAY pripravimo iz SW za merjenje časa (OEvent ali Krämer OE2003 in OS2003).
+Vhodne podatke v @SICSV in @SICSV-RELAY pripravimo iz SW za merjenje časa (OEvent ali Krämer OE2003 in OS2003). Vse datoteke morajo biti v UTF-8 kodiranju (lahko se jih shrani s pomočjo Notepada).
 
 ### Zagon skripte
-"""python ncscoring.py"""
+```python ncscoring.py```
 
 ### Osnova za točkovanje
 
